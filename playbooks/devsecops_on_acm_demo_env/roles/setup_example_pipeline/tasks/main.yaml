@@ -1,0 +1,9 @@
+---
+- name: Deploy app-globex-ui-pipeline example Pipeline
+  k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    api_key: "{{ vars[acm_token_var] }}"
+    state: present
+    src: "{{ role_path }}/resources/app-globex-ui-pipeline.yaml"
+...

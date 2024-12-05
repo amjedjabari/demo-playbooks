@@ -1,0 +1,12 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: declarative-configurations
+  namespace: stackrox
+data:
+  auth-provider-openshift-auth: |
+    name: openshift-auth
+    minimumRole: Admin
+    uiEndpoint: central-stackrox.apps.cluster-wfpwf.sandbox2279.opentlc.com:443
+    openshift:
+        enable: true

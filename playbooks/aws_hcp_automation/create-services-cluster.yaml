@@ -1,0 +1,32 @@
+---
+- name: Install OCP Infrastructure Components
+  gather_facts: false
+  hosts: localhost
+  #  vars_prompt:
+  #    # Prompt for cluster name
+  #    - name: ocp_cluster_address
+  #      prompt: Enter OCP Cluster Address (e.g. clustername.domain.com)
+  #      private: no
+  #      confirm: no
+  #    # Prompt for cluster-admin username
+  #    - name: cluster_admin_user
+  #      prompt: Enter cluster-admin user
+  #      private: no
+  #      confirm: no
+  #    # Prompt for cluster-admin password
+  #    - name: cluster_admin_password
+  #      prompt: Enter cluster-admin password
+  #      private: yes
+  #      confirm: no
+  tasks:
+    - debug:
+        msg: Performing IaC Automation
+
+- name: Provision HCP Cluster
+  ansible.builtin.import_playbook: provision-demo-hcp-cluster.yaml
+
+- name: Perform Day 2 Configuration
+  ansible.builtin.import_playbook: services-cluster-day2.yaml
+  vars:
+    ocp_cluster_address: "{{ hcp_cluster_address[0] }}"
+    subnet: "{{ private_subnet_id1 }}"

@@ -1,0 +1,63 @@
+---
+- name: Setup ACS on ACM Demo
+  gather_facts: false
+  hosts: localhost
+  vars_prompt:
+    # Prompt for cluster name
+    - name: ocp_cluster_address
+      prompt: Enter OCP Cluster Name
+      private: no
+      confirm: no
+    # Prompt for cluster-admin username
+    - name: cluster_admin_user
+      prompt: Enter cluster-admin user
+      private: no
+      confirm: no
+    # Prompt for cluster-admin password
+    - name: cluster_admin_password
+      prompt: Enter cluster-admin password
+      private: no
+      confirm: no
+  tasks:
+    - name: "OpenShift CLI login"
+      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
+
+    - name: Get group vars
+      include_vars: "{{ remote_repos_path }}/ansible-for-openshift/playbooks/acm/group_vars/all.yaml"
+
+    - name: Get API tokenfile
+      include_vars: "{{ acm_service_account_tokenfile }}"
+
+    - block:
+      - include_role:
+          name: setup_service_account
+        vars:
+          cluster_address: "{{ ocp_cluster_address }}"
+      ignore_errors: True
+
+    - include_role:
+        name: setup_acs_on_acm
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - name: Wait for stackrox Namespace to be created
+      k8s_info:
+        host: "https://api.{{ ocp_cluster_address }}:6443"
+        validate_certs: no
+        api_key: "{{ vars[acm_token_var] }}"
+        kind: Namespace
+        api_version: v1
+        name: stackrox
+      register: output_info
+      until: output_info.resources | length > 0
+      delay: 2
+      retries: 20
+
+    - name: Create ACS Declarative ConfigMap
+      k8s:
+        host: "https://api.{{ ocp_cluster_address }}:6443"
+        validate_certs: no
+        api_key: "{{ vars[acm_token_var] }}"
+        state: present
+        src: ./files/declarative-configs.yaml
+...

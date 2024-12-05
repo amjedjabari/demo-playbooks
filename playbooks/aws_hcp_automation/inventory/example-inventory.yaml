@@ -1,0 +1,46 @@
+openshift:
+  hosts:
+    localhost:
+      ansible_connection: local
+  vars:
+    # Cluster Provisioning Vars
+    aws_account_id: <AWS ACCOUNT ID>
+    account_roles_prefix: Managed-OpenShift
+    operator_roles_prefix: Managed-OpenShift-HCP
+    cluster_name: <cluster name>
+    cluster_short_name: <cluster short name> # When combined with the roles prefix, the total length for roles must be <32 characters
+    vpc_cidr: 10.0.0.0/24
+    private_subnet_id1: <private subnet id 1>
+    private_subnet_id2: <private subnet id 2>
+    private_subnet_id3: <private subnet id 3>
+    public_subnet_id1: <public subnet id 1>
+    public_subnet_id2: <public subnet id 2>
+    public_subnet_id3: <public subnet id 3>
+    compute_machine_type: m5a.4xlarge
+
+    # Temp Cluster Auth Vars
+    ocp_cluster_address: <cluster name>.<rndm>.p3.openshiftapps.com # You won't have this until AFTER the cluster provisions
+    cluster_admin_user: cluster-admin
+    cluster_admin_password: <cluster admin password>
+
+    # Day 2 Config Vars
+    trident_username: tridentuser
+    trident_password: tridentpass
+    region: us-east-2
+    DEFAULT_SG_ID: <default security group id>
+    subnet: <subnet id for machine pool>
+    machinepool_name: storage
+    machinepool_labels: node-role.kubernetes.io/infra=,cluster.ocs.openshift.io/openshift-storage=
+    machinepool_taints: node.ocs.openshift.io/storage=true:NoSchedule
+    min_replicas: 4
+    max_replicas: 4
+    instance_type: m5a.xlarge
+    type: ldap
+    name: LDAPIDP
+    url: <ldap url>
+    bind_password: <ldap bind pass>
+    bind_dn: <ldap bind dn>
+    id_attributes: dn
+    name_attributes: cn
+    email_attributes: mail
+    username_attributes: uid

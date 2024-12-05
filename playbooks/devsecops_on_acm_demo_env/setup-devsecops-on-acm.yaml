@@ -1,0 +1,64 @@
+---
+- name: Setup DevSecOps Demo
+  gather_facts: false
+  hosts: localhost
+  vars_prompt:
+    # Prompt for cluster name
+    - name: ocp_cluster_address
+      prompt: Enter OCP Cluster Name
+      private: no
+      confirm: no
+    # Prompt for cluster-admin username
+    - name: cluster_admin_user
+      prompt: Enter cluster-admin user
+      private: no
+      confirm: no
+    # Prompt for cluster-admin password
+    - name: cluster_admin_password
+      prompt: Enter cluster-admin password
+      private: no
+      confirm: no
+  tasks:
+    - name: Set repos path
+      set_fact:
+        remote_repos_path: "../../.."
+
+    - name: "OpenShift CLI login"
+      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
+
+    - name: Get group vars
+      include_vars: "{{ remote_repos_path }}/ansible-for-openshift/playbooks/acm/group_vars/all.yaml"
+
+    - name: Get API tokenfile
+      include_vars: "{{ acm_service_account_tokenfile }}"
+
+    - block:
+      - include_role:
+          name: setup_service_account
+        vars:
+          cluster_address: "{{ ocp_cluster_address }}"
+          repos_path: "{{ remote_repos_path }}"
+      ignore_errors: True
+
+    - include_role:
+        name: setup_ocp_pipelines_on_acm
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+        repos_path: "{{ remote_repos_path }}"
+
+    - include_role:
+        name: setup_ocp_gitops_on_acm
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+        repos_path: "{{ remote_repos_path }}"
+
+    - include_role:
+        name: wait_for_pipelines_operator_install
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: setup_example_pipeline
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+...

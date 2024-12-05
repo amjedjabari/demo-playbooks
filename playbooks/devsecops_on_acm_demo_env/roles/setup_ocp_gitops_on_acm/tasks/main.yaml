@@ -1,0 +1,8 @@
+---
+# Call ansible-for-openshift playbooks
+
+- include_role:
+    name: "{{ repos_path }}/ansible-for-openshift/playbooks/acm/roles/install_ocp_gitops_from_subscription"
+  vars:
+    cluster_address: "{{ ocp_cluster_address }}"
+...

@@ -1,0 +1,33 @@
+---
+- name: Get Pipelines operator InstallPlan
+  k8s_info:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    api_key: "{{ vars[acm_token_var] }}"
+    kind: Subscription
+    api_version: apps/v1
+    name: openshift-pipelines-operator-rh
+    namespace: openshift-operators
+  register: output_info
+
+- name: Get InstallPlan name
+  set_fact:
+    installplan_name: "{{ output_info.resources | json_query('[0].status.installplan.name') }}"
+
+- debug:
+    msg: "{{ installplan_name }}"
+
+- name: Wait for Pipelines operator to install
+  k8s_info:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    api_key: "{{ vars[acm_token_var] }}"
+    kind: InstallPlan
+    api_version: operators.coreos.com/v1alpha1
+    namespace: openshift-operators
+    name: "{{ installplan_name }}"
+  register: output_info
+  until: (output_info.resources | json_query('[0].status.phase')) == 'Complete'
+  delay: 2
+  retries: 20
+...

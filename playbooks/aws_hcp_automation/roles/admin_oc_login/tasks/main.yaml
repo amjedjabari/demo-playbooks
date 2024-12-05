@@ -1,0 +1,6 @@
+---
+# Call 61502-automation playbooks
+
+- include_role:
+    name: "{{ repos_path }}/61502-automation/automation/roles/admin_oc_login"
+...

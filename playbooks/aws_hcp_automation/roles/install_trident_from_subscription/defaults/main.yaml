@@ -1,0 +1,6 @@
+---
+subscription_repo_url: https://github.com/skylarscaling/61502-automation.git
+subscription_branch: main
+app_name: install-trident
+app_namespace: acm-install-policies
+...

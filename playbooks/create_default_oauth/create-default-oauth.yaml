@@ -1,0 +1,43 @@
+---
+- name: Setup Default OAuth on Clusters
+  gather_facts: false
+  hosts: localhost
+#  vars_prompt:
+#    # Prompt for cluster name
+#    - name: ocp_cluster_address
+#      prompt: Enter OCP Cluster Address
+#      private: no
+#      confirm: no
+#    # Prompt for cluster-admin username
+#    - name: cluster_admin_user
+#      prompt: Enter cluster-admin user
+#      private: no
+#      confirm: no
+#    # Prompt for cluster-admin password
+#    - name: cluster_admin_password
+#      prompt: Enter cluster-admin password
+#      private: no
+#      confirm: no
+  tasks:
+#    - name: TODO REMOVE temp for testing
+#      set_fact:
+#        ocp_cluster_address: <cluster address>
+#        cluster_admin_user: kubeadmin
+#        cluster_admin_password: <password>
+
+    - name: "OpenShift Hub Cluster CLI login"
+      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
+
+    - include_role:
+        name: create_default_cluster_admin
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+#    - name: "OpenShift Managed Cluster CLI login"
+#      shell: "oc login -u {{ default_user }} -p {{ default_managed_cluster_password }} https://api.{{ managed_cluster_name }}.{{ managed_cluster_base_domain }}:6443 --insecure-skip-tls-verify"
+#
+#    - include_role:
+#        name: create_default_cluster_admin
+#      vars:
+#        cluster_address: "{{ managed_cluster_name }}.{{ managed_cluster_base_domain }}"
+...

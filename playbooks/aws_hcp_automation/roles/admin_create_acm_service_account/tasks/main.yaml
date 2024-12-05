@@ -1,0 +1,10 @@
+---
+# Call 61502-automation playbooks
+
+- include_role:
+    name: "{{ repos_path }}/61502-automation/automation/roles/admin_create_acm_service_account"
+  vars:
+    cluster_address: "{{ ocp_cluster_address }}"
+    admin_user: "{{ cluster_admin_user }}"
+    admin_password: "{{ cluster_admin_password }}"
+...

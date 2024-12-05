@@ -1,0 +1,9 @@
+---
+# Call ansible-for-openshift playbooks
+
+# admin_create_service_account
+- include_role:
+    name: "{{ repos_path }}/ansible-for-openshift/playbooks/acm/roles/admin_create_service_account"
+  vars:
+    cluster_address: "{{ ocp_cluster_address }}"
+...

@@ -1,0 +1,26 @@
+---
+- name: Apply Day 2 Configuration to OCP HCP Cluster
+  gather_facts: false
+  hosts: localhost
+#  vars:
+# Required Variables for this Playbook
+#    cluster_name: cluster-name
+#    subnet: subnet-xxxxxxxxxxx
+#    machinepool_name: machine-pool-name
+#    machinepool_labels: node-role.kubernetes.io/infra=,cluster.ocs.openshift.io/openshift-storage=
+#    machinepool_taints: node.ocs.openshift.io/storage=true:NoSchedule
+#    min_replicas: 4
+#    max_replicas: 4
+#    instance_type: m5a.xlarge
+  tasks:
+    # TODO This should be specific to the environment, as needed
+    - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ private_subnet_id1 }}"
+        machinepool_name: quay-m5a
+        machinepool_labels: node-role.kubernetes.io/infra=,node-role.kubernetes.io/quay=
+        machinepool_taints: ''
+        min_replicas: 3
+        max_replicas: 3
+        instance_type: m5a.2xlarge

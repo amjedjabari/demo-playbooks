@@ -1,0 +1,8 @@
+---
+repos_path: "../../.."
+state: present
+cluster_admin_service_account_name: ansible-playbook-service-account-cluster-admin
+cluster_admin_service_account_namespace: ansible-playbook-access-cluster-admin
+acm_service_account_name: ansible-playbook-service-account-acm
+acm_service_account_namespace: ansible-playbook-access-acm
+...

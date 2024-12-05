@@ -1,0 +1,5 @@
+name: openshift-auth
+minimumRole: Admin
+uiEndpoint: central-stackrox.apps.cluster-wfpwf.sandbox2279.opentlc.com:443
+openshift:
+    enable: true

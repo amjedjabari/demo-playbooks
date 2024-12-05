@@ -1,0 +1,116 @@
+---
+- name: Apply Day 2 Configuration to OCP HCP Cluster
+  gather_facts: false
+  hosts: localhost
+  #  vars:
+  # Required Variables for this Playbook
+  #    type: "LDAP"
+  #    name: "LDAP3M"
+  #    cluster_name: hcp-3m
+  #    url: "ldaps://xxxxxxxxxxxx"
+  #    bind_password: "xxxxxxxxx"
+  #    bind_dn: "xxxxxxxxxx"
+  #    id_attributes: "dn"
+  #    name_attributes: "cn"
+  #    email_attributes: "mail"
+  #    username_attributes: "uid"
+  #    region: "us-east-1"
+  #    DEFAULT_3M_SG_ID: "sg-xxxxxxxxxxxxx"
+  #    VpcId: "xxxxxxx"
+  #    VpcEndpointId: "xxxxxxxxxx"
+  tasks:
+    # Ensure we're not still logged in under another account
+    - include_role:
+        name: admin_oc_logout
+
+    - include_role:
+        name: install_acm
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
+
+    - include_role:
+        name: admin_create_acm_service_account
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
+
+#    - include_role:
+#        name: aws_config_security_groups
+
+    - include_role:
+        name: admin_config_ldap
+
+    - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ private_subnet_id2 }}"
+        machinepool_name: storage
+        machinepool_labels: node-role.kubernetes.io/infra=,cluster.ocs.openshift.io/openshift-storage=,node-role.kubernetes.io/odf=
+        machinepool_taints: ''
+        min_replicas: 4
+        max_replicas: 4
+        instance_type: m5a.xlarge
+
+    - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ private_subnet_id1 }}"
+        machinepool_name: quay
+        machinepool_labels: node-role.kubernetes.io/infra=,node-role.kubernetes.io/quay=
+        machinepool_taints: ''
+        min_replicas: 3
+        max_replicas: 3
+        instance_type: m5a.2xlarge
+
+    - include_role:
+        name: install_odf_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_mco_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_groupsync_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_eso_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: admin_config_rbac
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+#    - include_role:
+#        name: install_trident_from_subscription
+#      vars:
+#        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_logging_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_acs_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_quay_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_cost_management_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
