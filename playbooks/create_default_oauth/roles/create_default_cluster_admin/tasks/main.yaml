@@ -7,10 +7,10 @@
       kind: ClusterRoleBinding
       apiVersion: rbac.authorization.k8s.io/v1
       metadata:
-        name: skylar-cluster-admin
+        name: amjed-cluster-admin
       subjects:
           - kind: User
-            name: skylar
+            name: amjed
       roleRef:
         apiGroup: rbac.authorization.k8s.io
         kind: ClusterRole
@@ -44,6 +44,6 @@
                 fileData:
                   name: default-htpasswd
               mappingMethod: claim
-              name: skylar-htpasswd
+              name: amjed-htpasswd
               type: HTPasswd
 ...
