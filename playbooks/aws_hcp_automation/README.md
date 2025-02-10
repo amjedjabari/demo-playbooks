@@ -44,8 +44,8 @@ in order for the relative pathing to work.
 You can checkout this repo and the required repo in your desired directory using the following commands:
 
 ```
-git clone https://github.com/SkylarScaling/demo-playbooks.git
-git clone https://github.com/SkylarScaling/61502-automation.git
+git clone https://github.com/amjedjabari/demo-playbooks.git
+git clone https://github.com/amjedjabari/rosa-automation-hcp.git
 ```
 
 (An example inventory file can be found in the inventory directory.)
